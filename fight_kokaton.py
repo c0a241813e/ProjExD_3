@@ -57,7 +57,7 @@ class Bird:
         self.img = __class__.imgs[(+5, 0)]
         self.rct: pg.Rect = self.img.get_rect()
         self.rct.center = xy
-        self.dire = (+5,0)  #演習４
+        self.dire = (+5,0)  #  演習４
 
     def change_img(self, num: int, screen: pg.Surface):
         """
@@ -99,14 +99,14 @@ class Beam:
         ビーム画像Surfaceを生成する
         引数 bird：ビームを放つこうかとん（Birdインスタンス）
         """
-        self.img = pg.image.load(f"fig/beam.png") # Surface
-        self.rct = self.img.get_rect() # Rect
-        self.rct.centery = bird.rct.centery # ビームの右座標　＝　こうかとんの中心縦座標
-        self.rct.left = bird.rct.right # ビームの左座標　＝　こうかとんの右座標
+        self.img = pg.image.load(f"fig/beam.png")  #  Surface
+        self.rct = self.img.get_rect()  #  Rect
+        self.rct.centery = bird.rct.centery  #  ビームの右座標　＝　こうかとんの中心縦座標
+        self.rct.left = bird.rct.right  #  ビームの左座標　＝　こうかとんの右座標
         self.vx, self.vy = +5, 0
-        self.vx, self.vy = bird.dire  # 演習４
-        angle = math.degrees(math.atan2(-self.vy,self.vx))  # 直交座標から角度0
-        self.img = pg.transform.rotozoom(self.img,angle,1.0)  # 弧度法から変換し回転
+        self.vx, self.vy = bird.dire  #  演習４
+        angle = math.degrees(math.atan2(-self.vy,self.vx))   #  直交座標から角度0
+        self.img = pg.transform.rotozoom(self.img,angle,1.0)   #  弧度法から変換し回転
         self.rct.centerx = bird.rct.centerx + bird.rct.width * self.vx / 5
         self.rct.centery = bird.rct.centery + bird.rct.height * self.vy / 5
 
@@ -120,11 +120,11 @@ class Beam:
             screen.blit(self.img, self.rct)    
 
 
-class Bomb:
+class Bomb:  #  爆発に関する
     """
     爆弾に関するクラス
     """
-    def __init__(self, color: tuple[int, int, int], rad: int):
+    def __init__(self, color: tuple[int, int, int], rad: int):  #  イニシャライズ
         """
         引数に基づき爆弾円Surfaceを生成する
         引数1 color：爆弾円の色タプル
@@ -137,7 +137,7 @@ class Bomb:
         self.rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
         self.vx, self.vy = +5, +5
 
-    def update(self, screen: pg.Surface):
+    def update(self, screen: pg.Surface):  #  updateメゾット
         """
         爆弾を速度ベクトルself.vx, self.vyに基づき移動させる
         引数 screen：画面Surface
@@ -151,29 +151,29 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
-class Score: # 演習１
+class Score:  #  演習１
     """
     scoreに関するクラス
     """
-    def __init__(self): # イニシャライズ
-        self.fonto = pg.font.SysFont("hgp創英角ポップ体" , 30) # フォント設定
-        self.score= 0 # 文字色の設定
+    def __init__(self):  #  イニシャライズ
+        self.fonto = pg.font.SysFont("hgp創英角ポップ体" , 30)  #  フォント設定
+        self.score= 0  #  文字色の設定
         self.color = (0,0,255)
         self.img = self.fonto.render(f"スコア：{self.score}",0,self.color)
         self.rct = self.img.get_rect()
-        self.rct.center = (100, HEIGHT - 50) # 座標
+        self.rct.center = (100, HEIGHT - 50)  # 座標
 
-    def update(self, screan:pg.Surface): # updateメゾット
+    def update(self, screan:pg.Surface):  #  updateメゾット
         self.img = self.fonto.render(f"Score: {self.score}", True, self.color)
-        screan.blit(self.img, self.rct) # スクリーンにblit
+        screan.blit(self.img, self.rct)  #  スクリーンにblit
 
 
-class Explosion:
+class Explosion:  #  爆発エフェクト
     """
     爆発エフェクトに関するクラス
     """
 
-    def __init__(self, center:list[int,int]):
+    def __init__(self, center:list[int,int]):  #  イニシャライズ
         img0 = pg.image.load("fig/explosion.gif")
         img = pg.transform.rotozoom(pg.transform.flip(img0, True,False),45,0.8)
         self.imgs = [img0,img]
@@ -181,7 +181,7 @@ class Explosion:
         self.rct.center = center
         self.life = 20
 
-    def update(self,screen:pg.Surface):
+    def update(self,screen:pg.Surface):  #  updateメゾット
         """
         画像を切り替える
         引数：screen 画面: surface
@@ -199,12 +199,12 @@ def main():
     # bomb = Bomb((255, 0, 0), 10)
     beams = []
     bombs = []
-    explotions = [] # 空のリスト
+    explotions = []  #  空のリスト
     for _ in range(NUM_OF_BOMBS):
         bomb = Bomb((255, 0, 0), 10)
         bombs.append(bomb)
     # bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]   内包表記
-    beam = None  # ゲーム初期化時にはビームは存在しない
+    beam = None   #  ゲーム初期化時にはビームは存在しない
     score = Score()
     clock = pg.time.Clock()
     tmr = 0
@@ -213,14 +213,14 @@ def main():
             if event.type == pg.QUIT:
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-                # スペースキー押下でBeamクラスのインスタンス生成
+                #  スペースキー押下でBeamクラスのインスタンス生成
                 beam = Beam(bird)
                 beams.append(beam)           
         screen.blit(bg_img, [0, 0])
         
         for bomb in bombs:
             if bird.rct.colliderect(bomb.rct):
-                # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
+                #  ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
                 bird.change_img(8, screen)
                 fonto = pg.font.Font(None, 80)
                 txt = fonto.render("Game Over", True, (255, 0, 0))
@@ -236,12 +236,12 @@ def main():
                 if beam is None :
                     continue
                 if beam.rct.colliderect(bomb.rct):
-                    # ビームが爆弾に当たったら、爆弾とビームを消す
+                    #  ビームが爆弾に当たったら、爆弾とビームを消す
                     explotions.append(Explosion(bomb.rct.center))
                     beams[i] = None
                     bombs[b] = None
                     bird.change_img(6, screen)
-                    score.score += 1 # スコアを足す
+                    score.score += 1  #  スコアを足す
                     pg.display.update()
                 
         bombs = [bomb for bomb in bombs if bomb is not None]
@@ -250,9 +250,9 @@ def main():
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
-        for beam in beams: # ビームが存在していたら
+        for beam in beams:  #  ビームが存在していたら
             beam.update(screen)  
-        for bomb in bombs: # 爆弾が存在していたら
+        for bomb in bombs:  #  爆弾が存在していたら
             bomb.update(screen)
         score.update(screen)
         for ex in explotions:
